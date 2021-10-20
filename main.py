@@ -1,3 +1,6 @@
+from functools import reduce
+
+
 class WrongJsonPathException(BaseException):
     pass
 
@@ -18,3 +21,12 @@ def get_recursive(*args, my_json=None, default=None):
                                      f'{head} with value={str(inner)}')
     else:
         return get_recursive(*tail, my_json=inner, default=default)
+
+
+def optional_chain(root, keys, default):
+    try:
+        return reduce(lambda my_dict, key: my_dict.get(key, default),
+                      keys.split('.'),
+                      root)
+    except AttributeError:
+        return None
